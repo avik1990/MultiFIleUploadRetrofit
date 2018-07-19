@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size">20sp</dimen>
+
+    <dimen name="text_padding_size">6dp</dimen>
+
+    <dimen name="text_mediumsize">14dp</dimen>
+
+    <dimen name="recycle_view_padding">6dp</dimen>
+
+    <dimen name="single_row_padding">4dp</dimen>
+
+
+    <dimen name="header_schoolname_size">35dp</dimen>
+    <dimen name="schooladddres_size">15dp</dimen>
+
+    <dimen name="img_padding">10dp</dimen>
+    <dimen name="app_camera_height">150dp</dimen>
+    <dimen name="bottom_height">150dp</dimen>
+</resources>

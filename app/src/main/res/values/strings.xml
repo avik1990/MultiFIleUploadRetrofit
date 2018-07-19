@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MultiFIleUploadRetrofit</string>
+    <string name="tedpickers">select images</string>
+</resources>
