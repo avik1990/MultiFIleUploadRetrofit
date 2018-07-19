@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroClient {
     private static Retrofit retro = null;
-    private static final String base_url = "http://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/";
+    private static final String base_url = "http://lmet-rfidcloud.croyezdem.com/api/Guardians/";
 
 
     private static Retrofit getClient() {

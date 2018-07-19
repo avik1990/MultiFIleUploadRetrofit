@@ -27,6 +27,8 @@ import com.app.multifileuploadretrofit.Api.ApiServices;
 import com.app.multifileuploadretrofit.Api.RetroClient;
 import com.app.multifileuploadretrofit.model.ResponseApiModel;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.gun0912.tedpicker.Config;
 import com.gun0912.tedpicker.ImagePickerActivity;
 
@@ -40,8 +42,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.app.multifileuploadretrofit.helper.RealPathUtil.getRealPath;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getImages(config);
 
         } else if (v == btn_upload) {
+
             for (int i = 0; i < image_uris.size(); i++) {
                 parts.add(preparefilepart(image_uris.get(i)));
             }
@@ -92,13 +93,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+//    private MultipartBody.Part preparefilepart(Uri uri) {
+//        part_image = getRealPathFromURI(uri);
+//        File imagefile = new File(part_image);
+//        RequestBody reqBody = RequestBody.create(MediaType.parse("multipart/form-file"), imagefile);
+//        MultipartBody.Part partImage = MultipartBody.Part.createFormData("PostFileName[]", imagefile.getName(), reqBody);
+//
+//        return partImage;
+//    }
+
+
     private MultipartBody.Part preparefilepart(Uri uri) {
-        part_image = getRealPath(mContext, uri);
-        File imagefile = new File(part_image);
-        RequestBody reqBody = RequestBody.create(MediaType.parse("multipart/form-file"), imagefile);
-        MultipartBody.Part partImage = MultipartBody.Part.createFormData("PostFileName[]", imagefile.getName(), reqBody);
+        File bin = new File(uri.toString());
+        /*FileBody bin1 = new FileBody(bin);
+
+        part_image = getRealPathFromURI(uri);
+        File imagefile = new File(part_image);*/
+        RequestBody reqBody = RequestBody.create(MediaType.parse("multipart/form-file"), bin);
+        MultipartBody.Part partImage = MultipartBody.Part.createFormData("PostFileName[]", bin.getName(), reqBody);
 
         return partImage;
+    }
+
+
+    public String getRealPathFromURI(Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = mContext.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } catch (Exception e) {
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
     }
 
     private void uploadfile() {
@@ -116,9 +148,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("RETRO", "ON RESPONSE  : " + response.body().toString());
                 if (response.body().getStatus().equals("1")) {
                     Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
-                    /*if (response.body().getData().getUploadedFileName().size() > 0) {
-                        //  getJsonString(response.body().getData());
-                    }*/
+                    if (response.body().getData().getUploadedFileName().size() > 0) {
+                        getJsonString(response.body().getData());
+                    }
                 } else {
                     Toast.makeText(mContext, "Failure", Toast.LENGTH_SHORT).show();
                 }
@@ -140,6 +172,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.putParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS, image_uris);
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
+    }
+
+    private String getJsonString(ResponseApiModel.Dataum student) {
+        // Before converting to GSON check value of id
+        Gson gson = null;
+        //  if (student.i == 0) {
+        gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+        /*} else {
+            gson = new Gson();
+        }*/
+        Log.d("JsonValue", gson.toJson(student));
+        return gson.toJson(student);
     }
 
     @Override
